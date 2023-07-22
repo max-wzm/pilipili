@@ -55,7 +55,7 @@ public class UserInfo implements Serializable {
      */
     private String birth;
 
-    private String role;
+    private String roleCode;
     /**
      * 创建时间
      */

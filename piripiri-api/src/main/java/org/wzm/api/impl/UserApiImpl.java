@@ -7,6 +7,7 @@ import org.wzm.api.UserApi;
 import org.wzm.api.UserSupportApi;
 import org.wzm.domain.Token;
 import org.wzm.domain.User;
+import org.wzm.domain.UserAuthInfo;
 import org.wzm.domain.UserInfo;
 import org.wzm.model.response.JsonResponse;
 import org.wzm.user.UserInfoService;
@@ -60,7 +61,7 @@ public class UserApiImpl implements UserApi {
     public JsonResponse<String> updateUsers(@RequestBody User user) {
         Long userId = userSupportApi.getCurrentUserId();
         user.setId(userId);
-        userService.updateById(user);
+        userService.updateUser(user);
         return JsonResponse.success();
     }
 
@@ -89,5 +90,12 @@ public class UserApiImpl implements UserApi {
         String refreshToken = request.getHeader("refreshToken");
         String accessToken = userService.refreshAccessToken(refreshToken, userId);
         return new JsonResponse<>(accessToken);
+    }
+
+    @GetMapping("/user-authorities")
+    public JsonResponse<UserAuthInfo> getUserAuthorities() {
+        Long userId = userSupportApi.getCurrentUserId();
+        UserAuthInfo userAuthorities = userService.getUserAuthorities(userId);
+        return new JsonResponse<>(userAuthorities);
     }
 }

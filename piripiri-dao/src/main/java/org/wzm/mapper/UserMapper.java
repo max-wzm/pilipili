@@ -9,4 +9,6 @@ public interface UserMapper {
     User getUserByPhone(@Param("phone") String phone);
 
     int save(@Param("user") User user);
+
+    int update(User user);
 }
