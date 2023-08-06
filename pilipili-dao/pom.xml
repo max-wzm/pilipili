@@ -5,37 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.wzm</groupId>
-        <artifactId>piripiri</artifactId>
+        <artifactId>pilipili</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>piripiri-api</artifactId>
+    <artifactId>pilipili-dao</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.wzm</groupId>
-            <artifactId>piripiri-dao</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wzm</groupId>
-            <artifactId>piripiri-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wzm</groupId>
-            <artifactId>piripiri-service</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

@@ -11,7 +11,7 @@ public class TokenUtil {
     private TokenUtil() {
     }
 
-    public static final String ISSUER = "PIRIPIRI";
+    public static final String ISSUER = "PILIPILI";
 
     public static String generateToken(Long userId) throws Exception {
         Algorithm algorithm = Algorithm.RSA256(RSAUtil.getPublicKey(), RSAUtil.getPrivateKey());

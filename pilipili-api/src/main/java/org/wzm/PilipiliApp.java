@@ -14,9 +14,9 @@ import org.wzm.service.WebSocketService;
 @MapperScan("org.wzm.mapper")
 @EnableAsync
 @EnableScheduling
-public class PiripiriApp {
+public class PilipiliApp {
     public static void main(String[] args) {
-        ApplicationContext app = SpringApplication.run(PiripiriApp.class, args);
+        ApplicationContext app = SpringApplication.run(PilipiliApp.class, args);
         WebSocketService.setApplicationContext(app);
     }
 }

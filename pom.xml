@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.wzm</groupId>
-    <artifactId>piripiri</artifactId>
+    <artifactId>pilipili</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>piripiri-api</module>
-        <module>piripiri-service</module>
-        <module>piripiri-dao</module>
-        <module>piripiri-common</module>
+        <module>pilipili-api</module>
+        <module>pilipili-service</module>
+        <module>pilipili-dao</module>
+        <module>pilipili-common</module>
     </modules>
 
     <properties>
