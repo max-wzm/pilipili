@@ -1,7 +1,11 @@
 package org.wzm.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -26,5 +30,18 @@ public class MD5Util {
         } else {
             return content.getBytes();
         }
+    }
+
+    public static String getFileMD5(MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int byteRead;
+        while((byteRead = inputStream.read(buffer))>0){
+            baos.write(buffer,0,byteRead);
+        }
+        inputStream.close();
+        String md5Hex = DigestUtils.md5Hex(baos.toByteArray());
+        return md5Hex;
     }
 }

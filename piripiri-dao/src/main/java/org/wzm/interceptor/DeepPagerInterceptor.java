@@ -11,7 +11,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcUtils;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,28 +37,24 @@ import java.util.stream.Collectors;
  * select id,hq_id,sn,status from table where hq_id=1 and status=2 order by id desc limit 0,100   ====>
  * select t1.id,t1.hq_id,t1.sn,t1.status from table as t1,(select id from table where hq_id=1 and status=2 order by id desc limit 0,100) as t2 where hq_id=1 and t1.id=t2.id
  * 特别注意：<br/>
- * 1.拦截器只对增加了分页前缀标签的SQL进行重写，未增加分页前缀标签的SQL不受影响；<br/>
- * 2.支持两种SQL前缀标签，分库分表:PREFIX_PAGER_SHARD,单表：PREFIX_PAGER_SINGLE (见代码中的常量)；<br/>
- * 3.该拦截器仅适应于简单查询，不支持join、group by、聚合函数；<br/>
- * 4.需要重写的SQL，必须保证：主键字段是id。如果重写的是分库分表的SQL,还必须保证分表字段是hq_id,且hq_id在SQL中只能精确匹配；<br/>
- * 5.在重写过程中如果出现异常，会中断对SQL的重写，继续保持原流程；<br/>
- * 6.SQL中的排序字段如果没有在索引中,则无法使用覆盖索引,会影响SQL优化的效果。因此建议尽量保证在排序字段上有索引。
+ * 拦截器只对增加了分页前缀标签的SQL进行重写，未增加分页前缀标签的SQL不受影响；<br/>
+ * 该拦截器仅适应于简单查询，不支持join、group by、聚合函数；<br/>
+ * 需要重写的SQL，必须保证：主键字段是id。
+ * 在重写过程中如果出现异常，会中断对SQL的重写，继续保持原流程；<br/>
+ * SQL中的排序字段如果没有在索引中,则无法使用覆盖索引,会影响SQL优化的效果。因此建议尽量保证在排序字段上有索引。
+ *
  * @author wangzhiming
  */
 @Component
 @Intercepts(@Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
-                                                                         RowBounds.class, ResultHandler.class}))
+                                                                         RowBounds.class, ResultHandler.class }))
 @Slf4j
 public class DeepPagerInterceptor implements Interceptor {
-    private static final String PREFIX_PAGER_SHARD = "/*deep-pager:shard*/";
-
     private static final String PREFIX_PAGER_SINGLE = "/*deep-pager:single*/";
 
     private static final int MAPPED_STATEMENT_INDEX = 0;
 
     private static final int PARAMETER_INDEX = 1;
-
-    private static final String HQ_ID = "hqId";
 
     private static final String SELECT = "select";
 
@@ -114,7 +109,7 @@ public class DeepPagerInterceptor implements Interceptor {
             queryArgs[MAPPED_STATEMENT_INDEX] = newMappedStatement;
 
         } catch (Exception e) {
-            log.error("SQL重写异常,降级不做重写,不影响业务.invocation:{}, e:{}", invocation, e);
+            log.error("SQL重写异常, invocation:{}, e:{}", invocation, e);
         }
 
     }
@@ -134,15 +129,7 @@ public class DeepPagerInterceptor implements Interceptor {
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 
         //单表查询,复制出一个新的MappedStatement
-        if (singleTable) {
-            return copyFromNewSql(mappedStatement, boundSql, newSql, parameterMappings, parameter);
-        } else {
-            //由于增加了分表字段的查询条件，需要增加一个ParameterMapping
-            List<ParameterMapping> newParameterMappings = Lists.newArrayList(parameterMappings);
-            newParameterMappings.add(findHqIdParameterMapping(parameterMappings));
-            return copyFromNewSql(mappedStatement, boundSql, newSql, newParameterMappings, parameter);
-        }
-
+        return copyFromNewSql(mappedStatement, boundSql, newSql, parameterMappings, parameter);
     }
 
     /**
@@ -152,11 +139,7 @@ public class DeepPagerInterceptor implements Interceptor {
      * @return
      */
     private boolean prefixWithPager(String sql) {
-        if (sql.contains(PREFIX_PAGER_SINGLE) && sql.contains(PREFIX_PAGER_SHARD)) {
-            log.error("SQL中包含同时包含分库分表和单店的前缀,不予处理,sql:{}", sql);
-        }
-
-        return sql.contains(PREFIX_PAGER_SINGLE) || sql.contains(PREFIX_PAGER_SHARD);
+        return sql.contains(PREFIX_PAGER_SINGLE);
     }
 
     /**
@@ -216,25 +199,6 @@ public class DeepPagerInterceptor implements Interceptor {
         }
 
         return false;
-    }
-
-    /**
-     * 查询hqId的ParameterMapping
-     *
-     * @param parameterMappings
-     * @return
-     */
-    private ParameterMapping findHqIdParameterMapping(List<ParameterMapping> parameterMappings) {
-
-        List<ParameterMapping> parameterMappingsHqId = parameterMappings.stream()
-                .filter(parameterMapping -> parameterMapping.getProperty().equals(HQ_ID))
-                .collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(parameterMappingsHqId)) {
-            throw new RuntimeException();
-        }
-
-        return parameterMappingsHqId.get(0);
     }
 
     /**
@@ -445,7 +409,6 @@ public class DeepPagerInterceptor implements Interceptor {
      * @return
      */
     private static String getSqlNoPrefix(String sql) {
-        return sql.replace(PREFIX_PAGER_SINGLE, StringUtils.EMPTY).replace(PREFIX_PAGER_SHARD, StringUtils.EMPTY);
+        return sql.replace(PREFIX_PAGER_SINGLE, StringUtils.EMPTY);
     }
-
 }

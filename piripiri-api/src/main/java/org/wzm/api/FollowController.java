@@ -19,7 +19,7 @@ public interface FollowController {
     @GetMapping("/user-fans")
     JsonResponse<List<UserFollowing>> getFans();
 
-    JsonResponse<PageResult<List<UserFollowing>>> listFansByPage(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize);
+    JsonResponse<PageResult<UserFollowing>> listFansByPage(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize);
 
     //添加分组
     @PostMapping("/user-following-groups")

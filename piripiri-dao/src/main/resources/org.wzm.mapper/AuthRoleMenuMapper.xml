@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.AuthRoleMenuMapper">
+    <resultMap id="BaseResultMap" type="org.wzm.domain.AuthRoleMenu">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="menu_id" property="menuId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, role_id, menu_id, create_time
+    </sql>
+
+    <select id="listByRoleCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_auth_role_menu
+        WHERE role_id = (
+        SELECT id FROM t_auth_role WHERE role_code = #{roleCode}
+        )
+    </select>
+</mapper>

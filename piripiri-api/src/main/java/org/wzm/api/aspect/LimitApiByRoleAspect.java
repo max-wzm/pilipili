@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.wzm.api.UserSupportApi;
+import org.wzm.api.UserContextHolder;
 import org.wzm.constant.annotation.LimitApiByRole;
 import org.wzm.domain.UserInfo;
 import org.wzm.model.exception.ApiException;
-import org.wzm.user.UserInfoService;
+import org.wzm.service.UserInfoService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 public class LimitApiByRoleAspect {
 
     @Autowired
-    private UserSupportApi userSupportApi;
+    private UserContextHolder userContextHolder;
 
     @Autowired
     private UserInfoService userInfoService;
@@ -38,7 +38,7 @@ public class LimitApiByRoleAspect {
         if (CollectionUtils.isEmpty(limitedRoleCodes)) {
             return;
         }
-        Long userId = userSupportApi.getCurrentUserId();
+        Long userId = userContextHolder.getCurrentUserId();
         UserInfo userInfo = userInfoService.getUserInfoByUserId(userId);
         String userRoleCode = userInfo.getRoleCode();
         boolean noAuth = limitedRoleCodes.contains(userRoleCode);

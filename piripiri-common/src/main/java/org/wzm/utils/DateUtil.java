@@ -34,6 +34,10 @@ public class DateUtil {
         return DateTimeFormatter.ofPattern(patter).format(date2LocalDate(date));
     }
 
+    public static Date parseDate(long timestamp) {
+        return new Date(timestamp);
+    }
+
     public static LocalDate date2LocalDate(Date date) {
         if (Objects.isNull(date)) {
             return null;

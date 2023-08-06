@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.DanmuMapper">
+
+    <resultMap id="DanmuResultMap" type="org.wzm.domain.Danmu">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="video_id" property="videoId"/>
+        <result column="content" property="content"/>
+        <result column="danmu_time" property="danmuTime"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="listByTime" resultMap="DanmuResultMap" parameterType="map">
+        SELECT * FROM t_danmu
+        WHERE video_id = #{videoId}
+        AND create_time BETWEEN #{start} AND #{end}
+        ORDER BY create_time
+    </select>
+
+    <insert id="save" parameterType="org.wzm.domain.Danmu">
+        INSERT INTO t_danmu (user_id, video_id, content, danmu_time, create_time)
+        VALUES (#{userId}, #{videoId}, #{content}, #{danmuTime}, #{createTime})
+    </insert>
+
+</mapper>

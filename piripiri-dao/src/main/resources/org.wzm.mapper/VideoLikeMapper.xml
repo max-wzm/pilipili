@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.VideoLikeMapper">
+
+    <!-- Base_Column_List -->
+    <sql id="Base_Column_List">
+        id, user_id, video_id, create_time
+    </sql>
+
+    <!-- ResultMap -->
+    <resultMap id="VideoLikeResultMap" type="org.wzm.domain.VideoLike">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="video_id" property="videoId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- VideoLike get(Long userId, Long videoId) -->
+    <select id="get" resultMap="VideoLikeResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_video_like
+        WHERE user_id = #{userId} AND video_id = #{videoId}
+    </select>
+
+    <!-- int save(VideoLike videoLike) -->
+    <insert id="save" parameterType="org.wzm.domain.VideoLike" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_video_like (user_id, video_id, create_time)
+        VALUES (#{userId}, #{videoId}, #{createTime})
+    </insert>
+
+    <!-- int delete(Long userId, Long videoId) -->
+    <delete id="delete">
+        DELETE FROM t_video_like
+        WHERE user_id = #{userId} AND video_id = #{videoId}
+    </delete>
+
+</mapper>

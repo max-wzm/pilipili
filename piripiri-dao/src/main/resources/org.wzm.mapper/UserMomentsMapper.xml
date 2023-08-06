@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.UserMomentsMapper">
+
+    <resultMap id="UserMomentsResultMap" type="org.wzm.domain.UserMoments">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="type" property="type" />
+        <result column="content_id" property="contentId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, type, content_id, create_time, update_time
+    </sql>
+
+    <insert id="save" parameterType="org.wzm.domain.UserMoments">
+        INSERT INTO t_user_moments (user_id, type, content_id, create_time, update_time)
+        VALUES (#{userId}, #{type}, #{contentId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="getById" resultMap="UserMomentsResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_user_moments
+        WHERE id = #{id}
+    </select>
+
+    <select id="page" resultMap="UserMomentsResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_user_moments
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+</mapper>

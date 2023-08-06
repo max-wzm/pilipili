@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.UserFollowingMapper">
+
+    <!-- Base_Column_List -->
+    <sql id="Base_Column_List">
+        id, user_id, following_id, group_id, create_time, update_time, mutual
+    </sql>
+
+    <!-- ResultMap -->
+    <resultMap id="UserFollowingResultMap" type="org.wzm.domain.UserFollowing">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="following_id" property="followingId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="mutual" property="mutual"/>
+    </resultMap>
+
+    <!-- deleteByDualIds -->
+    <delete id="deleteByDualIds">
+        DELETE FROM t_user_following
+        WHERE user_id = #{followerId} AND following_id = #{followingId}
+    </delete>
+
+    <!-- save -->
+    <insert id="save" parameterType="org.wzm.domain.UserFollowing" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user_following (user_id, following_id, group_id, create_time, update_time, mutual)
+        VALUES (#{userId}, #{followingId}, #{groupId}, #{createTime}, #{updateTime}, #{mutual})
+    </insert>
+
+    <!-- listByFollowerId -->
+    <select id="listByFollowerId" resultMap="UserFollowingResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_user_following
+        WHERE user_id = #{followerId} AND group_id = #{groupId}
+    </select>
+
+    <!-- listByFollowingId -->
+    <select id="listByFollowingId" resultMap="UserFollowingResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_user_following
+        WHERE following_id = #{followingId}
+    </select>
+
+    <!-- getByDualIds -->
+    <select id="getByDualIds" resultMap="UserFollowingResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_user_following
+        WHERE user_id = #{followerId} AND following_id = #{followingId}
+    </select>
+
+    <!-- page -->
+    <select id="page" resultMap="UserFollowingResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_user_following
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+</mapper>

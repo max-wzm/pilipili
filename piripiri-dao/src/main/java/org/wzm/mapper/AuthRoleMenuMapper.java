@@ -5,5 +5,5 @@ import org.wzm.domain.AuthRoleMenu;
 import java.util.List;
 
 public interface AuthRoleMenuMapper {
-    List<AuthRoleMenu> listByRoleId(String roleCode);
+    List<AuthRoleMenu> listByRoleCode(String roleCode);
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.FollowingGroupMapper">
+
+    <!-- 基本列 -->
+    <sql id="Base_Column_List">
+        id, user_id, name, update_time, create_time, type
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="FollowingGroupResultMap" type="org.wzm.domain.FollowingGroup">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="name" property="name" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_time" property="createTime" />
+        <result column="type" property="type" />
+    </resultMap>
+
+    <!-- 根据用户ID和类型查询 -->
+    <select id="getByUserIdAndType" resultMap="FollowingGroupResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_following_group
+        WHERE
+        user_id = #{userId}
+        AND
+        type = #{type}
+    </select>
+
+    <!-- 根据ID查询 -->
+    <select id="getById" resultMap="FollowingGroupResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_following_group
+        WHERE
+        id = #{id}
+    </select>
+
+    <!-- 保存 -->
+    <insert id="save" parameterType="org.wzm.domain.FollowingGroup">
+        INSERT INTO t_following_group (
+        user_id, name, update_time, create_time, type
+        ) VALUES (
+        #{userId}, #{name}, #{updateTime}, #{createTime}, #{type}
+        )
+    </insert>
+
+    <!-- 根据用户ID查询列表 -->
+    <select id="listByUserId" resultMap="FollowingGroupResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        t_following_group
+        WHERE
+        user_id = #{userId}
+    </select>
+
+</mapper>

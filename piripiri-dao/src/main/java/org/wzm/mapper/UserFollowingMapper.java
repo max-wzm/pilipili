@@ -1,5 +1,6 @@
 package org.wzm.mapper;
 
+import org.wzm.domain.PageResult;
 import org.wzm.domain.UserFollowing;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface UserFollowingMapper {
     List<UserFollowing> listByFollowingId(Long followingId);
 
     UserFollowing getByDualIds(Long followerId, Long followingId);
+
+    List<UserFollowing> page(int offset, int pageSize);
 }

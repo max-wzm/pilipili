@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wzm.mapper.VideoMapper">
+
+    <!-- Base_Column_List -->
+    <sql id="Base_Column_List">
+        id, user_id, url, thumbnail, title, type, duration, area, description, create_time, update_time
+    </sql>
+
+    <!-- ResultMap -->
+    <resultMap id="VideoResultMap" type="org.wzm.domain.Video">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="url" property="url"/>
+        <result column="thumbnail" property="thumbnail"/>
+        <result column="title" property="title"/>
+        <result column="type" property="type"/>
+        <result column="duration" property="duration"/>
+        <result column="area" property="area"/>
+        <result column="description" property="description"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- save -->
+    <insert id="save" parameterType="org.wzm.domain.Video">
+        INSERT INTO t_video (user_id, url, thumbnail, title, type, duration, area, description, create_time, update_time)
+        VALUES (#{userId}, #{url}, #{thumbnail}, #{title}, #{type}, #{duration}, #{area}, #{description}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!-- getById -->
+    <select id="getById" resultMap="VideoResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM t_video WHERE id = #{id}
+    </select>
+
+    <!-- listByIds -->
+    <select id="listByIds" resultMap="VideoResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM t_video WHERE id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!-- delete -->
+    <delete id="delete" parameterType="org.wzm.domain.Video">
+        DELETE FROM t_video WHERE id = #{id}
+    </delete>
+
+    <!-- page -->
+    <select id="page" resultMap="VideoResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM t_video
+        LIMIT #{pageSize} OFFSET #{pageIdx}
+    </select>
+
+</mapper>
